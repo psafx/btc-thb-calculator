@@ -1,0 +1,15 @@
+runtime: php55
+api_version: 1
+
+handlers:
+- url: /css
+  static_dir: css
+
+- url: /open-iconic
+  static_dir: open-iconic
+
+- url: /get-price.php
+  script: get-price.php
+
+- url: /.*
+  script: index.php

@@ -1,0 +1,41 @@
+body {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  font-family: Tahoma, sans-serif;
+}
+
+.header {
+  padding-bottom: 1rem;
+  border-bottom: .05rem solid #e5e5e5;
+}
+
+.footer {
+  padding-top: 1.5rem;
+  color: #777;
+  border-top: .05rem solid #e5e5e5;
+}
+
+.calculator {
+  margin: 3rem 0;
+}
+
+#alert_btc {
+  visibility: hidden;
+}
+
+.btn-add {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+@media (min-width: 576px) {
+  .first-row .btn-add,
+  .first-row .btn-calculate {
+    margin-top: 2rem;
+  }
+}
+
+.form-control[readonly] {
+  background-color: #fff !important;
+  border: 1px solid #e9ecef !important;
+}
