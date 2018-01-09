@@ -29,7 +29,6 @@ body {
 }
 
 @media (min-width: 576px) {
-  .first-row .btn-add,
   .first-row .btn-calculate {
     margin-top: 2rem;
   }

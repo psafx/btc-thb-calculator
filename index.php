@@ -10,7 +10,8 @@
 <script>
 jQuery(function($, undefined) {
   var now = 0
-    , last = 0
+    , last_thb = 0
+    , last_usd = 0
     , id = 1
   function get_btc_price() {
     latest = $.now()
@@ -21,7 +22,10 @@ jQuery(function($, undefined) {
     url = '/get-price.php'
     return $.getJSON(url, function(data) {
       if (data.THB !== undefined) {
-        last = data.THB
+        last_thb = data.THB
+      }
+      if (data.USD !== undefined) {
+        last_usd = data.USD
       }
     })
   }
@@ -36,13 +40,12 @@ jQuery(function($, undefined) {
       $('#alert_btc').css('visibility', 'hidden')
     }
     $.when(get_btc_price()).then(function() {
-      if (last > 0) {
-        var unit = $('#btc_unit_' + target + ' option:selected').val()
-          , decimal = 4
-          , output = 0.0
-          , output_str = ''
-
-        output = parseFloat(btc) * parseFloat(last)
+      var unit = $('#btc_unit_' + target + ' option:selected').val()
+        , decimal = 4
+        , output = 0.0
+        , output_str = ''
+      if (last_thb > 0) {
+        output = parseFloat(btc) * parseFloat(last_thb)
         if (unit == '2') {
           output /= 1000.0
           decimal = 6
@@ -56,11 +59,27 @@ jQuery(function($, undefined) {
         output_str = output.toFixed(decimal)
         $('#thb_output_' + target).val(output_str)
       }
+      if (last_usd > 0) {
+        output = parseFloat(btc) * parseFloat(last_usd)
+        if (unit == '2') {
+          output /= 1000.0
+          decimal = 6
+        } else if (unit == '3') {
+          output /= 1000000.0
+          decimal = 8
+        } else if (unit == '4') {
+          output /= 100000000.0
+          decimal = 10
+        }
+        output_str = output.toFixed(decimal)
+        $('#usd_output_' + target).val(output_str)
+      }
     })
     $(this).attr('disabled', 'disabled')
     $('#btc_amount_' + target).attr('disabled', 'disabled')
     $('#btc_unit_' + target).attr('disabled', 'disabled')
     $('#thb_output_' + target).attr('disabled', 'disabled')
+    $('#usd_output_' + target).attr('disabled', 'disabled')
   }
   $(document).on('click', '.btn-calculate', calculate)
   $('.btn-add').on('click', function(e) {
@@ -68,10 +87,10 @@ jQuery(function($, undefined) {
     id++
     id_str = ('000'+id).slice(-3)
     var content = '              <div class=\"form-row\">' +
-'                <div class="form-group col-sm-3">' +
+'                <div class="form-group col-sm-2">' +
 '                  <input type="text" class="form-control" id="btc_amount_' + id_str + '">' +
 '                </div>' +
-'                <div class="form-group col-sm-3">' +
+'                <div class="form-group col-sm-2">' +
 '                  <select id="btc_unit_' + id_str + '" class="form-control">' +
 '                    <option value="1">BTC</option>' +
 '                    <option value="2">mBTC</option>' +
@@ -83,12 +102,24 @@ jQuery(function($, undefined) {
 '                  <input type="text" readonly class="form-control" id="thb_output_' + id_str + '">' +
 '                </div>' +
 '                <div class="form-group col-sm-3">' +
+'                  <input type="text" readonly class="form-control" id="usd_output_' + id_str + '">' +
+'                </div>' +
+'                <div class="form-group col-sm-2">' +
 '                  <button class="btn btn-primary btn-calculate" data-target="' + id_str + '">Calculate</button>' +
 '                </div>' +
 '              </div>'
     $('#btc_to_thb_form').append(content)
   })
 })
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-35429216-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-35429216-3');
 </script>
   </head>
   <body>
@@ -107,15 +138,21 @@ jQuery(function($, undefined) {
         <div class="jumbotron">
           <p class="lead text-center">สำหรับแปลงราคา BTC เป็น THB แบ่งออกเป็น BTC mBTC &#181;BTC และ Satoshi</p>
         </div>
+        <p>*** ราคา BTC และอัตราแลกเปลี่ยน ใช้ข้อมูลจาก blockchain.info</p>
         <div class="row calculator">
-          <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+          <div class="col-lg-10 offset-lg-1">
             <form id="btc_to_thb_form">
+              <div class="form-row">
+                <div class="col-1 offset-11">
+                  <img class="btn-add" src="/open-iconic/svg/plus.svg" width="24px" height="24px" alt="plus">
+                </div>
+              </div>
               <div class="form-row first-row">
-                <div class="form-group col-sm-3">
+                <div class="form-group col-sm-2">
                   <label for="btc_amount_001">BTC</label>
                   <input type="text" class="form-control" id="btc_amount_001">
                 </div>
-                <div class="form-group col-sm-3">
+                <div class="form-group col-sm-2">
                   <label for="btc_unit_001">Unit</label>
                   <select id="btc_unit_001" class="form-control">
                     <option value="1">BTC</option>
@@ -129,8 +166,11 @@ jQuery(function($, undefined) {
                   <input type="text" readonly class="form-control" id="thb_output_001">
                 </div>
                 <div class="form-group col-sm-3">
+                  <label for="usd_output_001">USD</label>
+                  <input type="text" readonly class="form-control" id="usd_output_001">
+                </div>
+                <div class="form-group col-sm-2">
                   <button class="btn btn-primary btn-calculate" data-target="001">Calculate</button>
-                  <img class="btn-add" src="/open-iconic/svg/plus.svg" width="24px" height="24px" alt="plus">
                 </div>
               </div>
             </form>
