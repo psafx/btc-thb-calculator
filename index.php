@@ -7,12 +7,43 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="js/spin.js"></script>
 <script>
 jQuery(function($, undefined) {
-  var now = 0
+  var opts = {
+        lines: 13
+      , length: 36
+      , width: 20
+      , radius: 40
+      , scale: 0.5
+      , corners: 1
+      , color: '#ff9900'
+      , fadeColor: 'transparent'
+      , opacity: 0.25
+      , rotate: 0
+      , direction: 1
+      , speed: 0.8
+      , trail: 56
+      , fps: 20
+      , zIndex: 2e9
+      , className: 'spinner'
+      , top: '50%'
+      , left: '50%'
+      , shadow: 'none'
+      , position: 'absolute'
+      }
+    , spinner = new Spinner(opts)
+    , now = 0
     , last_thb = 0
     , last_usd = 0
     , id = 1
+
+  $(document).ajaxStart(function() {
+    spinner.spin(document.body)
+  }).ajaxStop(function() {
+    spinner.stop()
+  })
+
   function get_btc_price() {
     latest = $.now()
     if (now + 900000 > latest) {
@@ -75,7 +106,7 @@ jQuery(function($, undefined) {
         $('#usd_output_' + target).val(output_str)
       }
     })
-    $(this).attr('disabled', 'disabled')
+    $(this).hide()
     $('#btc_amount_' + target).attr('disabled', 'disabled')
     $('#btc_unit_' + target).attr('disabled', 'disabled')
     $('#thb_output_' + target).attr('disabled', 'disabled')
@@ -143,7 +174,7 @@ jQuery(function($, undefined) {
           <div class="col-lg-10 offset-lg-1">
             <form id="btc_to_thb_form">
               <div class="form-row">
-                <div class="col-1 offset-11">
+                <div class="col-2 offset-10">
                   <img class="btn-add" src="/open-iconic/svg/plus.svg" width="24px" height="24px" alt="plus">
                 </div>
               </div>
